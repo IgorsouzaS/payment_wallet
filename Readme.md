@@ -1,10 +1,10 @@
 <h1 id="wallet">Payment Wallet</h1>
 
 
-[![Github branch checks state](https://img.shields.io/github/checks-status/IgorSouzaS/jayatech/master.svg)](     )
-[![Swagger](https://img.shields.io/badge/swagger-valid-brightgreen.svg)](https://jayatech-test.heroku.com/swagger-ui)
-[![Github Last commit](https://img.shields.io/github/last-commit/IgorsouzaS/jayatech.svg)](         )
-[![Language](https://img.shields.io/github/languages/top/IgorsouzaS/jayatech.svg)](        )
+[![Github branch checks state](https://img.shields.io/github/checks-status/IgorSouzaS/payment_wallet/main.svg)](     )
+[![Swagger](https://img.shields.io/badge/swagger-valid-brightgreen.svg)](     )
+[![Github Last commit](https://img.shields.io/github/last-commit/IgorsouzaS/payment_wallet.svg)](         )
+[![Language](https://img.shields.io/github/languages/top/IgorsouzaS/payment_wallet.svg)](        )
 
 
 **Index**
@@ -16,6 +16,7 @@
         * [Clone](#clone)
         * [Test](#test)
         * [Run](#run)
+        * [Docker](#run-docker)
     * [Documentação Swagger](#swagger)
         * [Swagger UI](#swagger-ui)
         * [Swagger-docs](#swagger-docs)
@@ -78,6 +79,14 @@ $ gradle test
 
 ```
 $ gradle run
+```
+
+<h4 id="run-docker">Como executar utilizando docker - (Será executado o download das dependências, compilação e execução da aplicação)</h4>
+
+```
+$ docker build -t api-docker-image .
+
+$ docker-compose up
 ```
 
 <br/>
