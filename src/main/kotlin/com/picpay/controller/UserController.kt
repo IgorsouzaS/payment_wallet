@@ -4,8 +4,9 @@ import com.picpay.exception.TransactionException
 import com.picpay.model.response.Payment
 import com.picpay.model.response.Transaction
 import com.picpay.model.response.Transfer
-import com.picpay.common.Logger.logger
+import com.picpay.config.Logger.logger
 import com.picpay.service.UserService
+import io.swagger.annotations.ApiOperation
 import org.bson.types.ObjectId
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController
 class UserController(private val userService: UserService){
 
     @GetMapping("/{userId}/payments")
+    @ApiOperation(value = "Create transfer", response = Payment::class, responseContainer = "List")
     fun getUserPayments(@PathVariable("userId", required = true) userId: ObjectId)
     : ResponseEntity<List<Payment>> = try {
         val payments = userService.getPayments(userId).onEach {
@@ -30,6 +32,7 @@ class UserController(private val userService: UserService){
     }
 
     @GetMapping("/{userId}/transactions")
+    @ApiOperation(value = "Create transfer", response = Transaction::class, responseContainer = "List")
     fun getUserTransactions(@PathVariable("userId", required = true) userId: ObjectId,
                             @RequestParam type: String?) : ResponseEntity<List<Transaction>> = try {
         val deposits = userService.getTransactions(userId, type.orEmpty()).onEach {
@@ -43,6 +46,7 @@ class UserController(private val userService: UserService){
     }
 
     @GetMapping("/{userId}/transfers")
+    @ApiOperation(value = "Create transfer", response = Transfer::class, responseContainer = "List")
     fun getUserTransfers(@PathVariable("userId", required = true) userId: ObjectId)
     : ResponseEntity<List<Transfer>> = try {
         val transfers = userService.getTransfers(userId).onEach {

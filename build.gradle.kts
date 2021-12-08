@@ -29,10 +29,8 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 
-    // swagger
-    //val swaggerVersion = "3.0.0"
-    //implementation("io.springfox:springfox-boot-starter:$swaggerVersion")
-    //implementation("io.springfox:springfox-swagger-ui:$swaggerVersion")
+    implementation("io.springfox:springfox-swagger-ui:2.9.2")
+    implementation("io.springfox:springfox-swagger2:2.9.2")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(module = "junit")

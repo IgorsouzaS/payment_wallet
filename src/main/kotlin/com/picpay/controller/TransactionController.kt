@@ -7,7 +7,7 @@ import com.picpay.model.response.Deposit
 import com.picpay.model.response.Transaction
 import com.picpay.model.response.Transfer
 import com.picpay.model.response.Withdraw
-import com.picpay.common.Logger.logger
+import com.picpay.config.Logger.logger
 import com.picpay.model.types.TransactionType
 import org.bson.types.ObjectId
 import org.springframework.http.HttpStatus
@@ -18,11 +18,13 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 import com.picpay.service.TransactionService
+import io.swagger.annotations.ApiOperation
 
 @RestController("/")
 class TransactionController(val transactionService: TransactionService) {
 
     @PostMapping("/transfers")
+    @ApiOperation(value = "Create transfer", response = Transfer::class)
     fun createTransfer(@RequestBody request: TransferRequest) : ResponseEntity<Transfer> = try {
         val transfer = Transfer(
             originAccount = request.originAccount,
@@ -41,6 +43,7 @@ class TransactionController(val transactionService: TransactionService) {
     }
 
     @GetMapping("/transfers/{id}")
+    @ApiOperation(value = "Get Transfers by Id", response = Transfer::class)
     fun getTransfer(@PathVariable("id") transferId: String): ResponseEntity<Transfer> = try {
         val transaction = transactionService.getTransfer(ObjectId(transferId)).also {
             logger.info("Transaction with id ${it.get().id} returned")
@@ -53,6 +56,7 @@ class TransactionController(val transactionService: TransactionService) {
     }
 
     @PostMapping("/transactions")
+    @ApiOperation(value = "Create transaction", response = Transaction::class)
     fun createTransaction(@RequestBody request: TransactionRequest) : ResponseEntity<Transaction> = try {
         val createdTransaction : Transaction
         when(request.type) {
