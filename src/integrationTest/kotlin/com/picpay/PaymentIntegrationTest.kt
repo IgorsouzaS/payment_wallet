@@ -51,10 +51,7 @@ class PaymentIntegrationTest @Autowired constructor(
         saveOnePayment()
         val url = "${getRootUrl()}/${defaultUserId}"
 
-        val response = restTemplate.getForEntity(
-            url,
-            Payment::class.java
-        )
+        val response = restTemplate.getForEntity(url, Payment::class.java)
 
         Assertions.assertEquals(200, response.statusCode.value())
         Assertions.assertNotNull(response.body)
@@ -67,8 +64,7 @@ class PaymentIntegrationTest @Autowired constructor(
         val url = getRootUrl()
         val barcode = "123456789"
 
-        val response = restTemplate.postForEntity(
-            url,
+        val response = restTemplate.postForEntity(url,
             PaymentRequest(
                 userId = defaultUserId.toString(),
                 barcode = barcode,

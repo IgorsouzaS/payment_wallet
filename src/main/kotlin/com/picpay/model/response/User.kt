@@ -9,6 +9,7 @@ import java.time.LocalDateTime
 data class User(
     @Id
     val id: ObjectId = ObjectId.get(),
+    val email: String,
     val balance: Double,
     val createdDate: LocalDateTime = LocalDateTime.now(),
     val modifiedDate: LocalDateTime = LocalDateTime.now()

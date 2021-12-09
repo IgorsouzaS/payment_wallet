@@ -5,6 +5,7 @@ import com.picpay.model.response.Payment
 import com.picpay.model.response.Transaction
 import com.picpay.model.response.Transfer
 import com.picpay.config.Logger.logger
+import com.picpay.model.response.User
 import com.picpay.model.types.TransactionType
 import com.picpay.repository.UserRepository
 import org.bson.types.ObjectId
@@ -18,6 +19,16 @@ class UserService(
     private val userRepository: UserRepository,
     private val mongoTemplate: MongoTemplate // collection
 ) {
+
+    fun createUser(user: User) : User{
+        return userRepository.save(user).also {
+            logger.info("Created user with id: ${it.id}")
+        }
+    }
+
+    fun getUser(userId: ObjectId) : User{
+        return findUser(userId)
+    }
 
     fun getTransactions(userId: ObjectId, type: String) : List<Transaction> {
         findUser(userId)
@@ -54,12 +65,13 @@ class UserService(
         return mongoTemplate.find(query, Payment::class.java)
     }
 
-    private fun findUser(userId: ObjectId){
+    private fun findUser(userId: ObjectId) : User{
         val user = userRepository.findById(userId)
         if (!user.isPresent){
             throw TransactionException("Unregistered user").also {
                 logger.info("Unregistered user with id: $userId")
             }
         }
+        return user.get()
     }
 }
