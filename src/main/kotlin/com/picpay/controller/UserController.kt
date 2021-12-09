@@ -1,10 +1,10 @@
 package com.picpay.controller
 
+import com.picpay.config.Logger.logger
 import com.picpay.exception.TransactionException
 import com.picpay.model.response.Payment
 import com.picpay.model.response.Transaction
 import com.picpay.model.response.Transfer
-import com.picpay.config.Logger.logger
 import com.picpay.service.UserService
 import io.swagger.annotations.ApiOperation
 import org.bson.types.ObjectId

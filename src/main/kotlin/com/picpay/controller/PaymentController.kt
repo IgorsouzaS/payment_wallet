@@ -1,9 +1,11 @@
 package com.picpay.controller
 
+import com.picpay.config.Logger.logger
 import com.picpay.exception.TransactionException
 import com.picpay.model.request.PaymentRequest
 import com.picpay.model.response.Payment
-import com.picpay.config.Logger.logger
+import com.picpay.service.PaymentService
+import io.swagger.annotations.ApiOperation
 import org.bson.types.ObjectId
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -12,8 +14,6 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
-import com.picpay.service.PaymentService
-import io.swagger.annotations.ApiOperation
 
 @RestController("/payments")
 class PaymentController (val paymentService: PaymentService){

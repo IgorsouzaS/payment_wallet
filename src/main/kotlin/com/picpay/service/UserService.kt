@@ -1,10 +1,10 @@
 package com.picpay.service
 
+import com.picpay.config.Logger.logger
 import com.picpay.exception.TransactionException
 import com.picpay.model.response.Payment
 import com.picpay.model.response.Transaction
 import com.picpay.model.response.Transfer
-import com.picpay.config.Logger.logger
 import com.picpay.model.response.User
 import com.picpay.model.types.TransactionType
 import com.picpay.repository.UserRepository
