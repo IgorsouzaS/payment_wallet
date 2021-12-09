@@ -7,7 +7,7 @@
 [![Language](https://img.shields.io/github/languages/top/IgorsouzaS/payment_wallet.svg)](        )
 
 
-**Index**
+**Índice**
 
 * [Payment Wallet](#wallet)
     * [Descrição](#description)
@@ -26,26 +26,26 @@
         * [Transfers](#transfers)
         * [Payments](#payments)
    * [Logs](#logs)
-   * [Camadas](#layers)
+   * [Arquitetura](#layers)
 
 <br/>
 
 
-<h2 id="description">Description</h2>
+<h2 id="description">Descrição</h2>
 
 Este projeto é sobre uma API Rest que provê endpoints para realização de operações de uma carteira digital.
 
-<img src="" height="25px" width="25px"/> **Transfers**
+<img src="" height="25px" width="25px"/> **Transferências**
 
 Esta API salva cada operação realizada com todos os dados relacionados e permite a consulta dessas operações realizadas por um usuário.
 
-<img src="" height="25px" width="25px"/> **Payments**
+<img src="" height="25px" width="25px"/> **Pagamentos**
 
-This project provides currency and exchange rates by converting some currencies, including BRL, USD, EUR, JPY and others.
+Esta API provê endpoints para realização de pagamentos utilizando o saldo em conta do usuário.
 <br/><br/>
 
 
-<h2 id="technologies">Technologies</h2>
+<h2 id="technologies">Tecnologias</h2>
 <h4>As seguintes tecnologias foram usadas nesse projeto:</h4>
 
   * [Kotlin](https://kotlinlang.org/)
@@ -91,7 +91,7 @@ $ docker-compose up
 
 <br/>
 
-<h2 id="swagger">Swagger Documentation</h2>
+<h2 id="swagger">Documentação Swagger</h2>
 
 #### Um endpoint swagger será criado para documentar os endpoints do projeto
 <h5 id="swagger-docs">Versão Swagger JSON da documentação da API</h5>
@@ -153,7 +153,7 @@ Exemplo de body utilizado para fazer uma transferência
 
 
 <br/>
-<h2 id="layers">Layers</h2>
+<h2 id="layers">Arquitetura</h2>
 camadas e arquitetura
 </br>
 Injeção de dependências spring boot
