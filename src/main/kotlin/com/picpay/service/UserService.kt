@@ -2,6 +2,7 @@ package com.picpay.service
 
 import com.picpay.config.Logger.logger
 import com.picpay.exception.TransactionException
+import com.picpay.model.request.UserRequest
 import com.picpay.model.response.Payment
 import com.picpay.model.response.Transaction
 import com.picpay.model.response.Transfer
@@ -20,7 +21,11 @@ class UserService(
     private val mongoTemplate: MongoTemplate // collection
 ) {
 
-    fun createUser(user: User) : User{
+    fun createUser(request: UserRequest) : User{
+        val user = User(
+            email = request.email,
+            balance = 0.0
+        )
         return userRepository.save(user).also {
             logger.info("Created user with id: ${it.id}")
         }
