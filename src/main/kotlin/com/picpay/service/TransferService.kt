@@ -1,13 +1,15 @@
 package com.picpay.service
 
+import com.picpay.config.Logger.logger
 import com.picpay.exception.TransactionException
+import com.picpay.model.request.TransferRequest
 import com.picpay.model.response.Transfer
 import com.picpay.repository.TransferRepository
 import com.picpay.repository.UserRepository
 import org.bson.types.ObjectId
-import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
-import java.util.*
+import java.time.LocalDateTime
+import java.util.Optional
 
 @Service
 class TransferService(
@@ -15,24 +17,37 @@ class TransferService(
     private val userRepository: UserRepository
 ) {
 
-    fun createTransfer(transfer: Transfer): Transfer{
-        val originAccount = userRepository.findByIdOrNull(transfer.originAccount)
-        val destinyAccount = userRepository.findByIdOrNull(transfer.destinyAccount)
+    fun createTransfer(request: TransferRequest): Transfer{
+        val transfer = Transfer(
+            originAccount = ObjectId(request.originAccount),
+            destinyAccount = ObjectId(request.destinyAccount),
+            amount = request.amount,
+            description = request.description.orEmpty()
+        )
+        val originAccount = userRepository.findById(transfer.originAccount)
+        val destinyAccount = userRepository.findById(transfer.destinyAccount)
 
-        if (originAccount!!.balance > 0 &&
-            originAccount.balance >= transfer.amount &&
-            destinyAccount != null){
+        if (!originAccount.isPresent ||
+            !destinyAccount.isPresent ||
+            originAccount.get().balance < transfer.amount){
+            logger.info("")
             throw TransactionException("")
         }
 
-        userRepository.saveAll(
-            listOf(
-                originAccount.copy(balance = originAccount.balance - transfer.amount),
-                destinyAccount!!.copy(balance = destinyAccount.balance + transfer.amount)
+        return transferRepository.save(transfer).also {
+            userRepository.saveAll(
+                listOf(
+                    originAccount.get().copy(
+                        balance = originAccount.get().balance - transfer.amount, modifiedDate = LocalDateTime.now()),
+                    destinyAccount.get().copy(
+                        balance = destinyAccount.get().balance + transfer.amount, modifiedDate = LocalDateTime.now())
+                )
             )
-        )
-        return transferRepository.save(transfer)
+        }
     }
 
-    fun getTransfer(transferId: ObjectId): Optional<Transfer> = transferRepository.findById(transferId)
+    fun getTransfer(transferId: ObjectId): Optional<Transfer>{
+        logger.info("Finding transfer with id: $transferId")
+        return transferRepository.findById(transferId)
+    }
 }

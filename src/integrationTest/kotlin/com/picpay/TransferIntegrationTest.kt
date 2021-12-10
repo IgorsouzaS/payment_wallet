@@ -1,8 +1,11 @@
 package com.picpay
 
+import com.picpay.model.request.TransferRequest
 import com.picpay.model.response.Transfer
 import com.picpay.repository.TransferRepository
 import org.bson.types.ObjectId
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
@@ -22,6 +25,7 @@ class TransferIntegrationTest (
 
     private val defaultTransferId = ObjectId.get()
     private val defaultUserId = ObjectId.get()
+    private val defaultDestinyId = ObjectId.get()
 
     @LocalServerPort
     private var port: Int = 0
@@ -31,47 +35,45 @@ class TransferIntegrationTest (
         transferRepository.deleteAll()
     }
 
-    private val transfer = Transfer(
-        id = defaultTransferId,
-        destinyAccount = ObjectId.get(),
-        originAccount = defaultUserId,
-        amount = Double.fromBits(20L),
-        description = "Pagamento teste"
-    )
+    private val transferRequest = mockTransferRequest()
+    private val transfer = mockTransfer()
 
     private fun getRootUrl(): String = "http://localhost:$port/transfers"
 
-    private fun saveOneTransfer() = transferRepository.save(transfer)
+    private fun saveTransfer() = transferRepository.save(transfer)
 
     @Test
     fun `should create a transfer`() {
-        /*
-        saveOneTransfer()
-
-        val response = restTemplate.postForEntity(
-            getRootUrl(),
-            Transfer::class.java
-        )
+        val response = restTemplate.postForEntity(getRootUrl(), transferRequest, Transfer::class.java)
 
         assertEquals(200, response.statusCode.value())
         assertNotNull(response.body)
-        assertEquals(defaultTransactionId, response.body?.id)
-        */
+        assertEquals(defaultTransferId, response.body?.id)
     }
 
     @Test
     fun `should return single transfer by id`() {
-        /*
-        saveOneTransfer()
+        saveTransfer()
 
-        val response = restTemplate.getForEntity(
-            getRootUrl() + "/$defaultTransferId",
-            Transfer::class.java
-        )
+        val response = restTemplate.getForEntity(getRootUrl() + "/$defaultTransferId", Transfer::class.java)
 
-        Assertions.assertEquals(200, response.statusCode.value())
-        Assertions.assertNotNull(response.body)
-        Assertions.assertEquals(defaultTransferId, response.body?.id)
-        */
+        assertEquals(200, response.statusCode.value())
+        assertNotNull(response.body)
+        assertEquals(defaultTransferId, response.body?.id)
     }
+
+    private fun mockTransfer() = Transfer(
+        id = defaultTransferId,
+        destinyAccount = defaultDestinyId,
+        originAccount = defaultUserId,
+        amount = Double.fromBits(20L),
+        description = "Payment test"
+    )
+
+    private fun mockTransferRequest() = TransferRequest(
+        destinyAccount = defaultDestinyId.toString(),
+        originAccount = defaultUserId.toString(),
+        amount = Double.fromBits(20L),
+        description = "Payment test"
+    )
 }

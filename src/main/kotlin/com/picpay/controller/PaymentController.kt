@@ -39,7 +39,7 @@ class PaymentController (val paymentService: PaymentService){
             logger.info("Payment with id ${payment.get().id} returned")
             ResponseEntity.ok(payment.get())
         }else{
-            logger.info("Payment with id ${payment.get().id} not found")
+            logger.info("Payment with id $paymentId not found")
             ResponseEntity.notFound().build()
         }
     }catch(e: Exception) {
