@@ -1,5 +1,6 @@
 package com.picpay.service
 
+import com.picpay.model.request.PaymentRequest
 import com.picpay.model.response.Payment
 import com.picpay.repository.PaymentRepository
 import org.assertj.core.api.Assertions.assertThat
@@ -13,11 +14,15 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.context.junit.jupiter.SpringExtension
+import java.util.Optional
 
 @ExtendWith(SpringExtension::class)
 @SpringBootTest
 @AutoConfigureMockMvc
 class PaymentServiceTest(@Autowired val paymentService: PaymentService) {
+
+    private val defaultPaymentId = ObjectId.get()
+    private val defaultUserId = ObjectId.get()
 
     @MockBean
     lateinit var paymentRepository: PaymentRepository
@@ -26,12 +31,11 @@ class PaymentServiceTest(@Autowired val paymentService: PaymentService) {
     inner class PaymentCreation {
         @Test
         fun `save payment to repository`() {
-            /*
-            val payment = mockDefaultPayment()
-            Mockito.`when`(paymentRepository.save(payment)).thenReturn(payment)
-            val savedPayment = paymentService.createPayment(payment)
+            val paymentRequest = mockPaymentRequest()
+            val payment = mockPayment()
+            Mockito.`when`(paymentRepository.save(Mockito.any(Payment::class.java))).thenReturn(payment)
+            val savedPayment = paymentService.createPayment(paymentRequest)
             assertThat(savedPayment).isEqualTo(payment)
-            */
         }
     }
 
@@ -39,34 +43,33 @@ class PaymentServiceTest(@Autowired val paymentService: PaymentService) {
     inner class PaymentRetrieve {
         @Test
         fun `retrieve not exist payment from repository`() {
-            /*
-            val payment = mockDefaultPayment("324325325")
-            Mockito.`when`(paymentRepository.findById(payment.id)).thenReturn(null)
+            val payment = mockPayment()
+            Mockito.`when`(paymentRepository.findById(payment.id)).thenReturn(Optional.empty())
             val savedPayment = paymentService.getPayment(payment.id)
-            assertThat(savedPayment).isNull()
-            */
+            assertThat(savedPayment.isPresent).isFalse()
         }
 
         @Test
         fun `retrieve saved payment from repository`() {
-            /*
-            val payment = mockOptionalPayment()
-            Mockito.`when`(paymentRepository.findById(payment.id)).thenReturn()
+            val payment = mockPayment()
+            Mockito.`when`(paymentRepository.findById(payment.id)).thenReturn(Optional.of(payment))
             val savedPayment = paymentService.getPayment(payment.id)
             assertThat(savedPayment).isEqualTo(payment)
-            */
         }
     }
 
-    private fun mockDefaultPayment(id: String? = null) =  Payment(
-        id = if (id == null) {
-            ObjectId.get()
-        }else{
-            ObjectId(id)
-        },
-        userId = ObjectId.get(),
-        barcode = "",
+    private fun mockPayment() =  Payment(
+        id = defaultPaymentId,
+        userId = defaultUserId,
+        barcode = "123456789012",
         amount = Double.fromBits(20L),
-        description = ""
+        description = "Payment test"
+    )
+
+    private fun mockPaymentRequest() = PaymentRequest(
+        userId = defaultUserId.toString(),
+        barcode = "123456789012",
+        amount = Double.fromBits(20L),
+        description = "Payment test"
     )
 }

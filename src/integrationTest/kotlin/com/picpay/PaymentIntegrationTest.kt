@@ -34,51 +34,48 @@ class PaymentIntegrationTest @Autowired constructor(
         paymentRepository.deleteAll()
     }
 
-    private val payment = Payment(
-        id = defaultPaymentId,
-        userId = defaultUserId,
-        barcode = "123456789012",
-        amount = Double.fromBits(20L),
-        description = "Pagamento teste"
-    )
+    private val paymentRequest = mockPaymentRequest()
+    private val payment = mockPayment()
 
     private fun getRootUrl(): String = "http://localhost:$port/payments"
 
-    private fun saveOnePayment() = paymentRepository.save(payment)
+    private fun savePayment() = paymentRepository.save(payment)
 
     @Test
     fun `should create a payment`() {
-        /*
-        saveOnePayment()
         val url = getRootUrl()
-        val barcode = "123456789"
 
-        val response = restTemplate.postForEntity(url,
-            PaymentRequest(
-                userId = defaultUserId.toString(),
-                barcode = barcode,
-                amount = Double.fromBits(20L)
-            ),
-            Payment::class.java
-        )
+        val response = restTemplate.postForEntity(url, paymentRequest, Payment::class.java)
 
         Assertions.assertEquals(200, response.statusCode.value())
         Assertions.assertNotNull(response.body)
-        Assertions.assertEquals(defaultUserId, response.body!!.userId)
-         */
+        Assertions.assertEquals(defaultPaymentId, response.body!!.id)
     }
 
     @Test
     fun `should return a payment by id`() {
-        /*
-        saveOnePayment()
-        val url = "${getRootUrl()}/${defaultUserId}"
+        savePayment()
+        val url = "${getRootUrl()}/${defaultPaymentId}"
 
         val response = restTemplate.getForEntity(url, Payment::class.java)
 
         Assertions.assertEquals(200, response.statusCode.value())
         Assertions.assertNotNull(response.body)
         Assertions.assertEquals(defaultPaymentId, response.body?.id)
-         */
     }
+
+    private fun mockPayment() =  Payment(
+        id = defaultPaymentId,
+        userId = defaultUserId,
+        barcode = "123456789012",
+        amount = Double.fromBits(20L),
+        description = "Payment test"
+    )
+
+    private fun mockPaymentRequest() = PaymentRequest(
+        userId = defaultUserId.toString(),
+        barcode = "123456789012",
+        amount = Double.fromBits(20L),
+        description = "Payment test"
+    )
 }

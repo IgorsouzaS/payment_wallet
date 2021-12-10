@@ -21,13 +21,7 @@ class PaymentController (val paymentService: PaymentService){
     @PostMapping("/")
     @ApiOperation(value = "Create payment", response = Payment::class)
     fun createPayment(@RequestBody request: PaymentRequest) : ResponseEntity<Payment> = try {
-        val payment = Payment(
-            barcode = request.barcode,
-            amount = request.amount,
-            userId = ObjectId(request.userId),
-            description = request.description.orEmpty()
-        )
-        val createdPayment = paymentService.createPayment(payment).also {
+        val createdPayment = paymentService.createPayment(request).also {
             logger.info("Payment with id ${it.id} returned")
         }
         ResponseEntity(createdPayment, HttpStatus.CREATED)
@@ -40,10 +34,14 @@ class PaymentController (val paymentService: PaymentService){
     @GetMapping("/{id}")
     @ApiOperation(value = "Get payment by id", response = Payment::class)
     fun getPayment(@PathVariable("id") paymentId: String): ResponseEntity<Payment> = try {
-        val payment = paymentService.getPayment(ObjectId(paymentId)).also {
-            logger.info("Payment with id ${it.get().id} returned")
+        val payment = paymentService.getPayment(ObjectId(paymentId))
+        if(payment.isPresent) {
+            logger.info("Payment with id ${payment.get().id} returned")
+            ResponseEntity.ok(payment.get())
+        }else{
+            logger.info("Payment with id ${payment.get().id} not found")
+            ResponseEntity.notFound().build()
         }
-        ResponseEntity.ok(payment.get())
     }catch(e: Exception) {
         throw TransactionException("Unexpected Error: ${e.message}").also {
             logger.info("Unexpected Error: ${e.message}")
