@@ -1,5 +1,6 @@
 package com.picpay
 
+import com.picpay.model.request.TransactionRequest
 import com.picpay.model.response.Deposit
 import com.picpay.model.response.Withdraw
 import com.picpay.model.types.TransactionType
@@ -27,7 +28,9 @@ class TransactionIntegrationTest @Autowired constructor(
     private val restTemplate: TestRestTemplate
 ){
 
+    private val defaultUserId = ObjectId.get()
     private val defaultTransactionId = ObjectId.get()
+    private val defaultDestinyAccount = ObjectId.get()
     private val defaultOriginAccountId = ObjectId.get()
     private val defaultDestinyAccountId = ObjectId.get()
 
@@ -40,9 +43,9 @@ class TransactionIntegrationTest @Autowired constructor(
         transferRepository.deleteAll()
     }
 
-    private fun getRootUrl(): String = "http://localhost:$port"
+    private fun getRootUrl(): String = "http://localhost:$port/transactions"
 
-    private fun saveOneDeposit() = transactionRepository.save(
+    private fun saveDeposit() = transactionRepository.save(
         Deposit(
             id = defaultTransactionId,
             destinyAccount = defaultDestinyAccountId,
@@ -52,7 +55,7 @@ class TransactionIntegrationTest @Autowired constructor(
         )
     )
 
-    private fun saveOneWithdraw() = transactionRepository.save(
+    private fun saveWithdraw() = transactionRepository.save(
         Withdraw(
             id = defaultTransactionId,
             originAccount = defaultOriginAccountId,
@@ -66,29 +69,32 @@ class TransactionIntegrationTest @Autowired constructor(
 
     @Test
     fun `should create a deposit transaction`() {
-        /*
+
         val response = restTemplate.postForEntity(
-            getRootUrl() + "/transactions",
-            Transaction::class.java
+            getRootUrl(), mockTransactionRequest(TransactionType.DEPOSIT.name), Deposit::class.java
         )
 
         assertEquals(200, response.statusCode.value())
         assertNotNull(response.body)
         assertEquals(defaultTransactionId, response.body?.id)
-         */
     }
 
     @Test
     fun `should create a withdraw transaction`() {
-        /*
-        val response = restTemplate.getForEntity(
-            getRootUrl() + "/transactions",
-            Transaction::class.java
+        val response = restTemplate.postForEntity(
+            getRootUrl(), mockTransactionRequest(TransactionType.WITHDRAW.name), Withdraw::class.java
         )
 
         assertEquals(200, response.statusCode.value())
         assertNotNull(response.body)
         assertEquals(defaultTransactionId, response.body?.id)
-         */
     }
+
+    private fun mockTransactionRequest(type: String) = TransactionRequest(
+        originAccount = defaultUserId.toString(),
+        destinyAccount = defaultDestinyAccount.toString(),
+        type = type,
+        destinyBankCode = "212",
+        amount = Double.fromBits(20L)
+    )
 }
